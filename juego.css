@@ -210,3 +210,118 @@ body.seleccion-nivel {
   background-color: #cc6600; /* Color más oscuro al pasar el mouse */
   transform: scale(1.05);
 }
+
+.info-panel {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+  padding: 10px 20px;
+  background-color: rgba(255, 255, 255, 0.8);
+  border-radius: 15px;
+  box-shadow: 0 0 10px #ff9900;
+  font-size: 1.3em;
+  font-weight: bold;
+  color: #333;
+}
+
+.tiempo {
+  color: #000; /* Color negro */
+  font-weight: bold;
+  text-shadow: none; /* Sin brillo */
+}
+
+.puntaje {
+  color: #2ecc71; /* Verde para el puntaje */
+  font-weight: bold;
+  text-shadow: 0 0 5px #2ecc71;
+}
+
+.puntaje-final {
+  font-size: 2em;
+  color: #ff9900; /* Naranja */
+  margin-top: 20px;
+  text-shadow: 0 0 10px #ff9900, 0 0 20px #cc6600;
+}
+
+/* Responsive para pantallas pequeñas (375px, como iPhone) */
+@media (max-width: 375px) {
+  body {
+    font-size: 14px; /* Reducir el tamaño de fuente general */
+  }
+
+  .juego-container {
+    padding: 20px;
+    border-radius: 10px;
+    max-width: 90%; /* Ajustar el ancho */
+  }
+
+  .pregunta {
+    font-size: 1.8em; /* Reducir el tamaño del texto */
+  }
+
+  .btn-opcion {
+    font-size: 1.2em; /* Reducir el tamaño de los botones */
+    padding: 10px 15px;
+  }
+
+  .info-panel {
+    flex-direction: column; /* Cambiar a columna para pantallas pequeñas */
+    gap: 10px;
+    font-size: 1em;
+  }
+
+  .volver-jugar {
+    font-size: 1.2em; /* Reducir el tamaño del botón */
+    padding: 10px 20px;
+  }
+
+  .grafica {
+    padding: 10px;
+  }
+
+  #graficoResultados {
+    max-width: 100%;
+    height: auto; /* Ajustar la altura automáticamente */
+  }
+}
+
+/* Responsive para pantallas medianas (768px, como iPad) */
+@media (max-width: 768px) {
+  body {
+    font-size: 16px; /* Ajustar el tamaño de fuente general */
+  }
+
+  .juego-container {
+    padding: 30px;
+    border-radius: 15px;
+    max-width: 80%; /* Ajustar el ancho */
+  }
+
+  .pregunta {
+    font-size: 2em; /* Ajustar el tamaño del texto */
+  }
+
+  .btn-opcion {
+    font-size: 1.3em; /* Ajustar el tamaño de los botones */
+    padding: 12px 20px;
+  }
+
+  .info-panel {
+    font-size: 1.2em; /* Ajustar el tamaño del texto */
+  }
+
+  .volver-jugar {
+    font-size: 1.3em; /* Ajustar el tamaño del botón */
+    padding: 12px 25px;
+  }
+
+  .grafica {
+    padding: 15px;
+  }
+
+  #graficoResultados {
+    max-width: 100%;
+    height: auto; /* Ajustar la altura automáticamente */
+  }
+}

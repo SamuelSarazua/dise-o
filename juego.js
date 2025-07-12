@@ -1,14 +1,17 @@
+// archivo: juego.js
 import { preguntas } from "./preguntas.js";
 
 export function juego() {
   const container = document.createElement("div");
   container.className = "juego-container";
 
-  function mostrarInicio() {
-    // Cambiar el fondo al de la pantalla de inicio
-    document.body.className = "inicio";
+  let temporizadorInterval;
+  let tiempoRestante = 90; // 1.5 minutos
+  let puntaje = 0;
 
-    container.innerHTML = ""; // Limpiar el contenedor
+  function mostrarInicio() {
+    document.body.className = "inicio";
+    container.innerHTML = "";
 
     const tituloInicio = document.createElement("h1");
     tituloInicio.textContent = "🎮 Bienvenido a Trivial Trouble";
@@ -16,7 +19,7 @@ export function juego() {
     container.appendChild(tituloInicio);
 
     const imagenInicio = document.createElement("img");
-    imagenInicio.src = "https://wallpapers.com/images/hd/cuphead-and-beppi-the-clown-m5h8hdbjktxsva50.jpg"; // Imagen para la pantalla de inicio
+    imagenInicio.src = "https://wallpapers.com/images/hd/cuphead-and-beppi-the-clown-m5h8hdbjktxsva50.jpg";
     imagenInicio.alt = "Cuphead Inicio";
     imagenInicio.className = "imagen-inicio";
     container.appendChild(imagenInicio);
@@ -29,48 +32,74 @@ export function juego() {
   }
 
   function mostrarSeleccionNivel() {
-    // Cambiar el fondo al de la selección de nivel
     document.body.className = "seleccion-nivel";
+    container.innerHTML = "";
 
-    container.innerHTML = ""; // Limpiar el contenedor
-
-    const tituloSeleccion = document.createElement("h1");
-    tituloSeleccion.textContent = "Selecciona un Nivel";
-    tituloSeleccion.className = "titulo-seleccion";
-    container.appendChild(tituloSeleccion);
+    const titulo = document.createElement("h1");
+    titulo.textContent = "Selecciona un Nivel";
+    titulo.className = "titulo-seleccion";
+    container.appendChild(titulo);
 
     const nivelesContainer = document.createElement("div");
     nivelesContainer.className = "niveles-container";
 
     for (let nivel = 1; nivel <= 5; nivel++) {
-      const botonNivel = document.createElement("button");
-      botonNivel.textContent = `Nivel ${nivel}`;
-      botonNivel.className = "btn-nivel";
-      botonNivel.onclick = () => iniciarJuego(nivel);
-      nivelesContainer.appendChild(botonNivel);
+      const btnNivel = document.createElement("button");
+      btnNivel.textContent = `Nivel ${nivel}`;
+      btnNivel.className = "btn-nivel";
+      btnNivel.onclick = () => iniciarJuego(nivel);
+      nivelesContainer.appendChild(btnNivel);
     }
 
     container.appendChild(nivelesContainer);
   }
 
   function iniciarJuego(nivel) {
-    // Cambiar el fondo al del juego
     document.body.className = "juego";
 
     container.innerHTML = ""; // Limpiar el contenedor para mostrar el juego
 
-    const preguntasFiltradas = preguntas.filter(p => p.nivel === nivel); // Filtrar preguntas por nivel
+    const preguntasFiltradas = preguntas.filter(p => p.nivel === nivel);
     let indice = 0;
     let puntaje = 0;
+    let tiempoRestante = 90;
+
+    // Crear el contador de tiempo
+    const infoPanel = document.createElement("div");
+    infoPanel.className = "info-panel";
+
+    const reloj = document.createElement("div");
+    reloj.className = "tiempo";
+    reloj.textContent = `⏱️ Tiempo: ${tiempoRestante}s`;
+    infoPanel.appendChild(reloj);
+
+    const puntajeDisplay = document.createElement("div");
+    puntajeDisplay.className = "puntaje";
+    puntajeDisplay.textContent = `Puntaje: ${puntaje}`;
+    infoPanel.appendChild(puntajeDisplay);
+
+    container.appendChild(infoPanel);
+
+    // Temporizador
+    const temporizadorInterval = setInterval(() => {
+      tiempoRestante--;
+      reloj.textContent = `⏱️ Tiempo: ${tiempoRestante}s`;
+      if (tiempoRestante <= 0) {
+        clearInterval(temporizadorInterval);
+        mostrarFinal(puntaje, preguntasFiltradas.length);
+      }
+    }, 1000);
 
     function mostrarPregunta() {
       if (indice >= preguntasFiltradas.length) {
+        clearInterval(temporizadorInterval);
         mostrarFinal(puntaje, preguntasFiltradas.length);
         return;
       }
 
       const actual = preguntasFiltradas[indice];
       container.innerHTML = ""; // Limpiar el contenedor para mostrar la pregunta
+      container.appendChild(infoPanel); // Volver a agregar el panel de información
 
       const titulo = document.createElement("h2");
       titulo.className = "pregunta";
@@ -89,13 +118,14 @@ export function juego() {
           const correcta = i === actual.correcta;
           btn.classList.add(correcta ? "correcta" : "incorrecta");
 
-          if (correcta) puntaje++;
+          if (correcta) {
+            puntaje += 100; // Cada respuesta correcta vale 100 puntos
+            puntajeDisplay.textContent = `Puntaje: ${puntaje}`;
+          }
 
-          // Desactivar botones
           const botones = opcionesContainer.querySelectorAll("button");
           botones.forEach(b => b.disabled = true);
 
-          // Pasar a la siguiente pregunta luego de 1.5s
           setTimeout(() => {
             indice++;
             mostrarPregunta();
@@ -108,7 +138,7 @@ export function juego() {
     mostrarPregunta();
   }
 
-  function mostrarFinal(correctas, total) {
+  function mostrarFinal(puntaje, totalPreguntas) {
     container.innerHTML = ""; // Limpiar el contenedor para mostrar el final
 
     const titulo = document.createElement("h2");
@@ -118,10 +148,14 @@ export function juego() {
 
     const mensaje = document.createElement("div");
     mensaje.className = "mensaje-final";
-    mensaje.textContent = `Obtuviste ${correctas} de ${total} preguntas correctas.`;
+    mensaje.textContent = `Respondiste correctamente ${puntaje / 100} de ${totalPreguntas} preguntas.`;
     container.appendChild(mensaje);
 
-    // Crear contenedor para la gráfica
+    const puntajeFinal = document.createElement("div");
+    puntajeFinal.className = "puntaje-final";
+    puntajeFinal.textContent = `Puntaje final: ${puntaje}`;
+    container.appendChild(puntajeFinal);
+
     const graficaDiv = document.createElement("div");
     graficaDiv.className = "grafica";
     const canvas = document.createElement("canvas");
@@ -129,15 +163,14 @@ export function juego() {
     graficaDiv.appendChild(canvas);
     container.appendChild(graficaDiv);
 
-    // Mostrar la gráfica
-    const incorrectas = total - correctas;
+    const incorrectas = totalPreguntas - puntaje / 100;
     new Chart(canvas, {
       type: "bar",
       data: {
         labels: ["Correctas", "Incorrectas"],
         datasets: [{
           label: "Respuestas",
-          data: [correctas, incorrectas],
+          data: [puntaje / 100, incorrectas],
           backgroundColor: ["#2ecc71", "#e74c3c"]
         }]
       },
@@ -154,14 +187,13 @@ export function juego() {
       }
     });
 
-    // Botón para volver a jugar
     const reiniciarBtn = document.createElement("button");
     reiniciarBtn.textContent = "Volver a jugar";
-    reiniciarBtn.className = "btn-opcion";
+    reiniciarBtn.className = "btn-opcion volver-jugar";
     reiniciarBtn.onclick = () => mostrarSeleccionNivel();
     container.appendChild(reiniciarBtn);
   }
 
-  mostrarInicio(); // Mostrar la pantalla de inicio al cargar
+  mostrarInicio();
   return container;
 }
