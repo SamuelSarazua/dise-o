@@ -210,12 +210,6 @@ export function juego() {
       link.click();
     };
     juegoContainer.appendChild(descargarBtn);
-
-    const reiniciarBtn = document.createElement("button");
-    reiniciarBtn.textContent = "Volver a jugar";
-    reiniciarBtn.className = "btn-opcion volver-jugar";
-    reiniciarBtn.onclick = () => mostrarSeleccionNivel();
-    juegoContainer.appendChild(reiniciarBtn);
   }
 
   mostrarInicio();
